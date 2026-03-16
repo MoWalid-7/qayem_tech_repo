@@ -940,8 +940,13 @@
 @endsection
 
 @section('scripts')
+@php
+$jsThinking = json_encode(__('Thinking...'));
+$jsErrorMsg = json_encode(__('Sorry, I encountered an error.'));
+@endphp
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+    const _i18n = { thinking: {!! $jsThinking !!}, errorMsg: {!! $jsErrorMsg !!} };
     // Universal Form Handler
     async function handleFormSubmit(formId, route, successReload = true) {
         document.getElementById(formId).addEventListener('submit', async function(e) {
@@ -1169,11 +1174,7 @@
             // Loading bubble
             const loadingBubble = document.createElement('div');
             loadingBubble.className = 'chat-bubble ai loading animate-fade-in';
-            loadingBubble.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ' + {
-                {
-                    Js::from(__('Thinking...'))
-                }
-            };
+            loadingBubble.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ' + _i18n.thinking;
             container.appendChild(loadingBubble);
             container.scrollTop = container.scrollHeight;
 
@@ -1194,11 +1195,7 @@
 
                 const aiBubble = document.createElement('div');
                 aiBubble.className = 'chat-bubble ai animate-fade-in shadow-sm';
-                aiBubble.innerText = result.response || {
-                    {
-                        Js::from(__('Sorry, I encountered an error.'))
-                    }
-                };
+                aiBubble.innerText = result.response || _i18n.errorMsg;
                 container.appendChild(aiBubble);
                 container.scrollTop = container.scrollHeight;
             } catch (err) {
@@ -1258,83 +1255,87 @@
     }
 
     // Floating Chat Toggle, Drag & Resize
-    document.addEventListener('DOMContentLoaded', () => {
+    // Scripts load at end of body so DOM is already ready — no DOMContentLoaded needed
+    (function() {
         const floatingChatBtn = document.getElementById('floatingChatBtn');
         const floatingChatWindow = document.getElementById('floatingChatWindow');
         const container = document.querySelector('.floating-chat-container');
         const aiMessageInput = document.getElementById('aiMessageInput');
 
-        if (container && floatingChatBtn && floatingChatWindow) {
-            let isDragging = false;
-            let startX, startY, initialRight, initialBottom;
+        if (!container || !floatingChatBtn || !floatingChatWindow) return;
 
-            // Toggle functionality
-            floatingChatBtn.addEventListener('click', (e) => {
-                if (isDragging) return;
-                e.stopPropagation();
-                floatingChatWindow.classList.toggle('active');
-                if (floatingChatWindow.classList.contains('active')) {
-                    if (aiMessageInput) aiMessageInput.focus();
-                }
-            });
+        let isDragging = false;
+        let startX, startY, initialRight, initialBottom;
 
-            // Dragging logic
-            container.addEventListener('mousedown', startDrag);
-            container.addEventListener('touchstart', startDrag, {
+        // Toggle functionality
+        floatingChatBtn.addEventListener('click', (e) => {
+            if (isDragging) return;
+            e.stopPropagation();
+            floatingChatWindow.classList.toggle('active');
+            if (floatingChatWindow.classList.contains('active')) {
+                if (aiMessageInput) aiMessageInput.focus();
+            }
+        });
+
+        // Dragging logic
+        container.addEventListener('mousedown', startDrag);
+        container.addEventListener('touchstart', startDrag, {
+            passive: false
+        });
+
+        function startDrag(e) {
+            if (!e.target.closest('#floatingChatBtn') && !e.target.closest('.chat-header')) return;
+
+            isDragging = false;
+            const event = e.type === 'touchstart' ? e.touches[0] : e;
+            startX = event.clientX;
+            startY = event.clientY;
+
+            const style = window.getComputedStyle(container);
+            initialRight = parseInt(style.right);
+            initialBottom = parseInt(style.bottom);
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, {
                 passive: false
             });
-
-            function startDrag(e) {
-                // Only allow dragging via the button or the chat header
-                if (!e.target.closest('#floatingChatBtn') && !e.target.closest('.chat-header')) return;
-
-                isDragging = false; // Reset for click detection
-                const event = e.type === 'touchstart' ? e.touches[0] : e;
-                startX = event.clientX;
-                startY = event.clientY;
-
-                const style = window.getComputedStyle(container);
-                initialRight = parseInt(style.right);
-                initialBottom = parseInt(style.bottom);
-
-                document.addEventListener('mousemove', drag);
-                document.addEventListener('touchmove', drag, {
-                    passive: false
-                });
-                document.addEventListener('mouseup', stopDrag);
-                document.addEventListener('touchend', stopDrag);
-            }
-
-            function drag(e) {
-                const event = e.type === 'touchmove' ? e.touches[0] : e;
-                const dx = startX - event.clientX;
-                const dy = startY - event.clientY;
-
-                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
-
-                if (isDragging) {
-                    if (e.cancelable) e.preventDefault();
-                    container.style.right = (initialRight + dx) + 'px';
-                    container.style.bottom = (initialBottom + dy) + 'px';
-                    container.style.left = 'auto'; // Reset left if any
-                }
-            }
-
-            function stopDrag() {
-                document.removeEventListener('mousemove', drag);
-                document.removeEventListener('touchmove', drag);
-                document.removeEventListener('mouseup', stopDrag);
-                document.removeEventListener('touchend', stopDrag);
-            }
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!floatingChatWindow.contains(e.target) && !floatingChatBtn.contains(e.target)) {
-                    floatingChatWindow.classList.remove('active');
-                }
-            });
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
         }
-    });
+
+        function drag(e) {
+            const event = e.type === 'touchmove' ? e.touches[0] : e;
+            const dx = startX - event.clientX;
+            const dy = startY - event.clientY;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+
+            if (isDragging) {
+                if (e.cancelable) e.preventDefault();
+                container.style.right = (initialRight + dx) + 'px';
+                container.style.bottom = (initialBottom + dy) + 'px';
+                container.style.left = 'auto';
+            }
+        }
+
+        function stopDrag() {
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+            // Reset after a tick so click handler sees isDragging=true and ignores the drag-end click
+            setTimeout(() => {
+                isDragging = false;
+            }, 0);
+        }
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!floatingChatWindow.contains(e.target) && !floatingChatBtn.contains(e.target)) {
+                floatingChatWindow.classList.remove('active');
+            }
+        });
+    })();
 
     document.addEventListener('DOMContentLoaded', () => {
         const ctx = document.getElementById('performanceChart');
@@ -1348,37 +1349,9 @@
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [{
-                    {
-                        Js::from(__('Jan'))
-                    }
-                }, {
-                    {
-                        Js::from(__('Feb'))
-                    }
-                }, {
-                    {
-                        Js::from(__('Mar'))
-                    }
-                }, {
-                    {
-                        Js::from(__('Apr'))
-                    }
-                }, {
-                    {
-                        Js::from(__('May'))
-                    }
-                }, {
-                    {
-                        Js::from(__('Jun'))
-                    }
-                }],
+                labels: [{{ Js::from(__('Jan')) }}, {{ Js::from(__('Feb')) }}, {{ Js::from(__('Mar')) }}, {{ Js::from(__('Apr')) }}, {{ Js::from(__('May')) }}, {{ Js::from(__('Jun')) }}],
                 datasets: [{
-                    label: {
-                        {
-                            Js::from(__('Efficiency'))
-                        }
-                    },
+                    label: {{ Js::from(__('Efficiency')) }},
                     data: [65, 72, 68, 85, 82, 90],
                     borderColor: '#4f46e5',
                     backgroundColor: gradient,
