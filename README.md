@@ -55,8 +55,8 @@ Whether you're a General Manager, HR Specialist, or Department Manager, QayemTec
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd qayemtech
+   git clone https://github.com/MoWalid-7/qayem_tech_repo.git
+   cd qayem_tech_repo
    ```
 
 2. **Install PHP dependencies:**
