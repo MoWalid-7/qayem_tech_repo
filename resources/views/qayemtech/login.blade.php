@@ -27,23 +27,6 @@
             <label for="password">{{ __('Password') }}</label>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label text-secondary small">{{ __('Demo: Choose Role') }}</label>
-            <select class="form-select" id="roleSelect" style="background-color: var(--dark-surface); color: white; border: 1px solid var(--glass-border);">
-                <option value="employee">{{ __('Employee') }}</option>
-                <option value="manager">{{ __('Department Manager') }}</option>
-                <option value="hr">{{ __('HR Specialist') }}</option>
-                <option value="gm">{{ __('General Manager') }}</option>
-            </select>
-        </div>
-
-        <div class="form-check mb-4">
-            <input class="form-check-input" type="checkbox" id="verifyCheckbox">
-            <label class="form-check-label text-secondary small" for="verifyCheckbox">
-                {{ __('I have verified my email address') }}
-            </label>
-        </div>
-
         <button type="submit" class="btn-auth">{{ __('Login to Dashboard') }}</button>
 
         <div class="text-center mt-4">
