@@ -148,11 +148,14 @@ User Message: {$prompt}";
                 $responseData = $response->json();
                 return $responseData['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from AI.';
             }
-            Log::error('Gemini Chat Error', ['response' => $response->body()]);
+            Log::error('Gemini Chat Error', ['status' => $response->status(), 'response' => $response->body()]);
+            if ($response->status() === 429) {
+                return 'AI Assistant is temporarily busy (Quota limit reached). Please try again in a minute.';
+            }
         } catch (\Exception $e) {
             Log::error('Gemini Chat Exception', ['message' => $e->getMessage()]);
         }
 
-        return 'Failed to reach AI assistant.';
+        return 'Failed to reach AI assistant. Please check your connection or try again later.';
     }
 }

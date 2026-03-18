@@ -168,8 +168,10 @@ class QayemWebController extends Controller
         $managers = $company->managers()->where('role', 'department_manager')->get();
         $departments = $company->departments;
         $employees = $company->employees;
+        $jsThinking = \Illuminate\Support\Js::from(__('Thinking...'));
+        $jsErrorMsg = \Illuminate\Support\Js::from(__('Failed to reach AI assistant'));
 
-        return view('qayemtech.dashboard', compact('user', 'company', 'hrs', 'managers', 'departments', 'employees'));
+        return view('qayemtech.dashboard', compact('user', 'company', 'hrs', 'managers', 'departments', 'employees', 'jsThinking', 'jsErrorMsg'));
     }
 
     /**
@@ -315,6 +317,30 @@ class QayemWebController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Department created successfully!']);
+    }
+
+    /**
+     * Update Department
+     */
+    public function updateDepartment(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:departments,id',
+            'name' => 'required|string|max:255',
+            'manager_id' => 'nullable|exists:managers,id'
+        ]);
+
+        $user = Auth::guard('manager')->user() ?? Auth::guard('hr')->user();
+        $dept = \App\Models\Department::where('id', $request->id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
+
+        $dept->update([
+            'name' => $request->name,
+            'manager_id' => $request->manager_id,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Department updated successfully!']);
     }
 
     /**

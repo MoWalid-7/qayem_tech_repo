@@ -26,6 +26,7 @@ Route::post('/ai-chat', [QayemWebController::class, 'aiChat'])->name('ai.chat');
 Route::get('/get-profile', [QayemWebController::class, 'getProfile'])->name('profile.get');
 Route::post('/hr-users', [QayemWebController::class, 'storeHrAccount'])->name('hr.store');
 Route::post('/departments', [QayemWebController::class, 'storeDepartment'])->name('dept.store');
+Route::post('/departments/update', [QayemWebController::class, 'updateDepartment'])->name('dept.update');
 Route::post('/dept-managers', [QayemWebController::class, 'storeDeptManager'])->name('manager.store');
 Route::post('/employees', [QayemWebController::class, 'storeEmployee'])->name('employee.store');
 Route::post('/employee-metrics', [QayemWebController::class, 'updateEmployeeMetrics'])->name('employee.metrics');
