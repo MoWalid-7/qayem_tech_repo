@@ -428,7 +428,10 @@
                                         <td class="text-secondary small">{{ $hr->created_at->format('M d, Y') }}</td>
                                         <td class="text-end px-4">
                                             @if($hr->id !== $user->id)
-                                            <button class="btn btn-sm btn-outline-light border-glass rounded-pill px-3">{{ __('Manage') }}</button>
+                                            <button class="btn btn-sm btn-outline-light border-glass rounded-pill px-3"
+                                                onclick="openEditHrModal('{{ $hr->id }}', '{{ addslashes($hr->name) }}', '{{ $hr->email }}')">
+                                                {{ __('Manage') }}
+                                            </button>
                                             @else
                                             <span class="text-secondary smaller">{{ __('Current User') }}</span>
                                             @endif
@@ -659,6 +662,45 @@
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Create HR Account') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit HR Modal (GM Only) -->
+<div class="modal fade" id="editHrModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-glass p-3">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white">{{ __('Edit HR Account') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editHrForm">
+                @csrf
+                <input type="hidden" name="id" id="editHrId">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" id="editHrName" class="form-control" placeholder="{{ __('Name') }}" required>
+                        <label>{{ __('Full Name') }}</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" id="editHrEmail" class="form-control" placeholder="{{ __('Email') }}" required>
+                        <label>{{ __('Email Address') }}</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="password" class="form-control" placeholder="{{ __('Password (Leave blank to keep current)') }}" minlength="6">
+                        <label>{{ __('New Password (Optional)') }}</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" onclick="deleteHrAccount()">
+                            <i class="bi bi-trash3 me-1"></i> {{ __('Delete Account') }}
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Save Changes') }}</button>
                 </div>
             </form>
         </div>
@@ -984,6 +1026,8 @@ $qayemConfig = [
 'csrfToken' => csrf_token(),
 'routes' => [
 'hrStore' => route("hr.store"),
+'hrUpdate' => route("hr.update"),
+'hrDelete' => route("hr.delete"),
 'deptStore' => route("dept.store"),
 'deptUpdate' => route("dept.update"),
 'managerStore' => route("manager.store"),

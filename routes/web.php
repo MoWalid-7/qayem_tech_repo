@@ -25,6 +25,8 @@ Route::get('/dashboard', [QayemWebController::class, 'dashboard'])->name('dashbo
 Route::post('/ai-chat', [QayemWebController::class, 'aiChat'])->name('ai.chat');
 Route::get('/get-profile', [QayemWebController::class, 'getProfile'])->name('profile.get');
 Route::post('/hr-users', [QayemWebController::class, 'storeHrAccount'])->name('hr.store');
+Route::post('/hr-users/update', [QayemWebController::class, 'updateHrAccount'])->name('hr.update');
+Route::post('/hr-users/delete', [QayemWebController::class, 'deleteHrAccount'])->name('hr.delete');
 Route::post('/departments', [QayemWebController::class, 'storeDepartment'])->name('dept.store');
 Route::post('/departments/update', [QayemWebController::class, 'updateDepartment'])->name('dept.update');
 Route::post('/dept-managers', [QayemWebController::class, 'storeDeptManager'])->name('manager.store');
