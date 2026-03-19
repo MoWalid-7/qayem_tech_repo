@@ -128,6 +128,44 @@ function openEditDeptModal(id, name, managerId) {
     new bootstrap.Modal('#editDeptModal').show();
 }
 
+function openEditHrModal(id, name, email) {
+    document.getElementById('editHrId').value = id;
+    document.getElementById('editHrName').value = name;
+    document.getElementById('editHrEmail').value = email;
+    new bootstrap.Modal('#editHrModal').show();
+}
+
+async function deleteHrAccount() {
+    const id = document.getElementById('editHrId').value;
+    if (!id) return;
+
+    if (!confirm('Are you sure you want to delete this HR account? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(window.QayemConfig.routes.hrDelete, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+            },
+            body: JSON.stringify({
+                id: id
+            })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast(result.message);
+            location.reload();
+        } else {
+            showToast(result.message, 'danger');
+        }
+    } catch (err) {
+        showToast('Error deleting account', 'danger');
+    }
+}
+
 function openMetricsModal(element) {
     const id = element.getAttribute('data-id');
     const name = element.getAttribute('data-name');
@@ -222,6 +260,7 @@ function showToast(message, type = 'success') {
 document.addEventListener('DOMContentLoaded', () => {
     // Form Registrations
     if (document.getElementById('addHrForm')) handleFormSubmit('addHrForm', window.QayemConfig.routes.hrStore);
+    if (document.getElementById('editHrForm')) handleFormSubmit('editHrForm', window.QayemConfig.routes.hrUpdate);
     if (document.getElementById('addDeptForm')) handleFormSubmit('addDeptForm', window.QayemConfig.routes.deptStore);
     if (document.getElementById('addManagerForm')) handleFormSubmit('addManagerForm', window.QayemConfig.routes.managerStore);
     if (document.getElementById('addEmployeeForm')) handleFormSubmit('addEmployeeForm', window.QayemConfig.routes.employeeStore);

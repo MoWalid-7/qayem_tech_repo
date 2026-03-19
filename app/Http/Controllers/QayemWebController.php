@@ -300,6 +300,64 @@ class QayemWebController extends Controller
     }
 
     /**
+     * Update HR Account
+     */
+    public function updateHrAccount(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:hr_users,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:hr_users,email,' . $request->id,
+            'password' => 'nullable|min:6',
+        ]);
+
+        $user = Auth::guard('manager')->user() ?? Auth::guard('hr')->user();
+        if (!$user || !($user->role === 'general_manager' || $user->role === 'gm')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $hr = \App\Models\HrUser::where('id', $request->id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
+
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+        ];
+
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $hr->update($data);
+
+        return response()->json(['success' => true, 'message' => 'HR account updated successfully!']);
+    }
+
+    /**
+     * Delete HR Account
+     */
+    public function deleteHrAccount(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:hr_users,id',
+        ]);
+
+        $user = Auth::guard('manager')->user() ?? Auth::guard('hr')->user();
+        if (!$user || !($user->role === 'general_manager' || $user->role === 'gm')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $hr = \App\Models\HrUser::where('id', $request->id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
+
+        $hr->delete();
+
+        return response()->json(['success' => true, 'message' => 'HR account deleted successfully!']);
+    }
+
+    /**
      * Store Department
      */
     public function storeDepartment(Request $request)
