@@ -15,10 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('password')->nullable();
+            $table->rememberToken();
             $table->string('job_title')->nullable();
+            $table->date('hire_date')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->integer('attendance_rate')->nullable();
             $table->integer('tasks_completed')->default(0);
+            $table->integer('tasks_requested')->default(0);
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete();
             $table->timestamps();

@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
+            $table->unsignedBigInteger('plan_id')->nullable();
+            $table->unsignedBigInteger('hr_user_id')->nullable();
             $table->string('type');
             $table->string('stripe_id')->unique();
             $table->string('stripe_status');
@@ -21,9 +23,14 @@ return new class extends Migration
             $table->integer('quantity')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
 
-            $table->index(['user_id', 'stripe_status']);
+            $table->index(['company_id', 'stripe_status']);
+            $table->foreign('plan_id', 'cas_subscriptions_plan_id_foreign')->references('id')->on('plans')->nullOnDelete();
+            $table->foreign('hr_user_id', 'cas_subscriptions_hr_user_id_foreign')->references('id')->on('hr_users')->nullOnDelete();
         });
     }
 

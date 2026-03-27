@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
+            $table->string('role')->default('hr');
             $table->string('password');
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->timestamps();
