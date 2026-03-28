@@ -1,9 +1,9 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
-@section('title', 'QayemTech - AI-Powered Performance Management')
+@section('title', 'Evalo - AI-Powered Performance Management')
 
 @section('content')
-@include('qayemtech.partials.nav')
+@include('evalo.partials.nav')
 
 <!-- Hero Section -->
 <section class="qt-hero">
@@ -13,7 +13,7 @@
                 <h1 class="display-3 fw-bold">{!! __('Elevate Every :span', ['span' => '<span>' . __('Performance') . '</span>']) !!}</h1>
                 <p class="lead mb-4">{{ __('The all-in-one SaaS platform that uses Gemini AI to transform how you evaluate, mentor, and grow your workforce.') }}</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{{ route('subscribe') }}" class="btn-hero btn-hero-primary m-0">{{ __('Join QayemTech') }}</a>
+                    <a href="{{ route('subscribe') }}" class="btn-hero btn-hero-primary m-0">{{ __('Join Evalo') }}</a>
                     <a href="{{ route('about') }}" class="btn-hero btn-hero-outline m-0">{{ __('Our Mission') }}</a>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             <div class="col-md-4 animate-up delay-1">
                 <div class="glass-card h-100">
                     <div class="mb-3 text-warning">★★★★★</div>
-                    <p class="text-secondary italic">"{{ __('QayemTech has completely transformed how we handle employee growth. The AI advisory is a game-changer for our managers.') }}"</p>
+                    <p class="text-secondary italic">"{{ __('Evalo has completely transformed how we handle employee growth. The AI advisory is a game-changer for our managers.') }}"</p>
                     <hr class="border-secondary border-opacity-25">
                     <div class="d-flex align-items-center gap-3">
                         <div class="profile-avatar mb-0" style="width: 40px; height: 40px; font-size: 1rem;">JS</div>
@@ -216,10 +216,10 @@
 <section class="py-5 text-center">
     <div class="container py-5 animate-up">
         <h2 class="mb-4">{{ __('Ready to optimize your team?') }}</h2>
-        <p class="lead text-secondary mb-5">{{ __('Join hundreds of companies using QayemTech to build a better workplace.') }}</p>
+        <p class="lead text-secondary mb-5">{{ __('Join hundreds of companies using Evalo to build a better workplace.') }}</p>
         <a href="{{ route('subscribe') }}" class="btn-hero btn-hero-primary px-5">{{ __('Get Started Today') }}</a>
     </div>
 </section>
 
-@include('qayemtech.partials.footer')
+@include('evalo.partials.footer')
 @endsection

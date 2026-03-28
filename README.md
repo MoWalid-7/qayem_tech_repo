@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>QayemTech</h1>
+  <h1>Evalo</h1>
   <p><strong>The Future of AI-Driven Performance Management</strong></p>
 </div>
 
@@ -20,9 +20,9 @@
 
 ## 🚀 Overview
 
-**QayemTech** is an innovative SaaS platform designed to transform how modern companies manage their human resources and employee performance. It moves beyond traditional, rigid HR systems by integrating real-time AI assistance, dynamic visual analytics, and a visually stunning "Dark Glassmorphism" interface.
+**Evalo** is an innovative SaaS platform designed to transform how modern companies manage their human resources and employee performance. It moves beyond traditional, rigid HR systems by integrating real-time AI assistance, dynamic visual analytics, and a visually stunning "Dark Glassmorphism" interface.
 
-Whether you're a General Manager, HR Specialist, or Department Manager, QayemTech provides a unified, intelligent, and seamless experience tailored to your role.
+Whether you're a General Manager, HR Specialist, or Department Manager, Evalo provides a unified, intelligent, and seamless experience tailored to your role.
 
 ## ✨ Key Features
 
@@ -97,7 +97,7 @@ Whether you're a General Manager, HR Specialist, or Department Manager, QayemTec
 
 ## 🔒 Security
 
-QayemTech implements robust security measures:
+Evalo implements robust security measures:
 - CSRF protection on all forms.
 - Role-based Access Control (RBAC).
 - Secure payment processing via Stripe.
@@ -105,4 +105,4 @@ QayemTech implements robust security measures:
 
 ## 📄 License
 
-This project is proprietary software. All rights reserved by **QayemTech**.
+This project is proprietary software. All rights reserved by **Evalo**.

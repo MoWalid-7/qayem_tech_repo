@@ -1,13 +1,13 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
-@section('title', __('Login') . ' - ' . __('QayemTech'))
+@section('title', __('Login') . ' - ' . __('Evalo'))
 @section('body_class', 'auth-wrapper')
 
 @section('content')
 <!-- Navbar -->
 <nav class="qt-navbar">
     <div class="container d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="{{ route('home') }}">{{ __('QayemTech') }}</a>
+        <a class="navbar-brand" href="{{ route('home') }}">{{ __('Evalo') }}</a>
         <a href="{{ route('subscribe') }}" class="nav-link">{{ __('Subscribe') }}</a>
     </div>
 </nav>

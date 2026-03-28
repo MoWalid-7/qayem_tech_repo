@@ -1,9 +1,9 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
-@section('title', __('Contact Us') . ' - ' . __('QayemTech'))
+@section('title', __('Contact Us') . ' - ' . __('Evalo'))
 
 @section('content')
-@include('qayemtech.partials.nav')
+@include('evalo.partials.nav')
 
 <section class="qt-hero" style="height: 50vh; min-height: 350px;">
     <div class="container animate-up">
@@ -26,7 +26,7 @@
                         </div>
                         <div>
                             <h6 class="mb-0">{{ __('Email Support') }}</h6>
-                            <p class="text-secondary small mb-0">support@qayemtech.com</p>
+                            <p class="text-secondary small mb-0">support@evalo.com</p>
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
     </div>
 </section>
 
-@include('qayemtech.partials.footer')
+@include('evalo.partials.footer')
 @endsection
 
 @section('scripts')

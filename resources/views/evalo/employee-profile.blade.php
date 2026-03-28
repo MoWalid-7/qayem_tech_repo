@@ -1,4 +1,4 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
 @section('title', __('My Profile') . ' - ' . $employee->name)
 @section('body_class', 'bg-dark')
@@ -569,7 +569,7 @@
             <div class="d-flex align-items-center gap-2">
                 <div class="ai-avatar-small"><i class="bi bi-robot"></i></div>
                 <div>
-                    <div class="text-white fw-bold smaller">Qayem AI</div>
+                    <div class="text-white fw-bold smaller">Evalo AI</div>
                     <div class="text-success smaller" style="font-size:0.7rem"><i class="bi bi-circle-fill me-1"></i>{{ __('Online') }}</div>
                 </div>
             </div>

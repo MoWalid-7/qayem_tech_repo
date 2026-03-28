@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Auth;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 
-class QayemWebController extends Controller
+class EvaloWebController extends Controller
 {
     /**
      * Home page / Landing page
      */
     public function index()
     {
-        return view('qayemtech.index');
+        return view('evalo.index');
     }
 
     /**
@@ -24,7 +24,7 @@ class QayemWebController extends Controller
      */
     public function about()
     {
-        return view('qayemtech.about');
+        return view('evalo.about');
     }
 
     /**
@@ -32,7 +32,7 @@ class QayemWebController extends Controller
      */
     public function contact()
     {
-        return view('qayemtech.contact');
+        return view('evalo.contact');
     }
 
     /**
@@ -42,7 +42,7 @@ class QayemWebController extends Controller
     {
         // Fetch plans from DB for the view
         $plans = DB::table('plans')->get();
-        return view('qayemtech.subscription', compact('plans'));
+        return view('evalo.subscription', compact('plans'));
     }
 
     /**
@@ -125,7 +125,7 @@ class QayemWebController extends Controller
         if (Auth::guard('hr')->check()) {
             return redirect()->route('dashboard');
         }
-        return view('qayemtech.login');
+        return view('evalo.login');
     }
 
 
@@ -171,7 +171,7 @@ class QayemWebController extends Controller
         $jsThinking = \Illuminate\Support\Js::from(__('Thinking...'));
         $jsErrorMsg = \Illuminate\Support\Js::from(__('Failed to reach AI assistant'));
 
-        return view('qayemtech.dashboard', compact('user', 'company', 'hrs', 'managers', 'departments', 'employees', 'jsThinking', 'jsErrorMsg'));
+        return view('evalo.dashboard', compact('user', 'company', 'hrs', 'managers', 'departments', 'employees', 'jsThinking', 'jsErrorMsg'));
     }
 
     /**
@@ -593,7 +593,7 @@ class QayemWebController extends Controller
 
         $latestEvaluation = $employee->evaluations->first();
 
-        return view('qayemtech.employee-profile', compact('employee', 'latestEvaluation'));
+        return view('evalo.employee-profile', compact('employee', 'latestEvaluation'));
     }
 
     /**

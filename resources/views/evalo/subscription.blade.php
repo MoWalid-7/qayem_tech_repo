@@ -1,10 +1,10 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
-@section('title', 'Subscribe - QayemTech')
+@section('title', 'Subscribe - Evalo')
 @section('body_class', 'sub-wrapper')
 
 @section('content')
-@include('qayemtech.partials.nav')
+@include('evalo.partials.nav')
 
 <div class="container mt-5">
     <div class="text-center mb-5 animate-up">
@@ -18,7 +18,7 @@
                 <div class="row g-0">
                     <!-- Left Info Panel -->
                     <div class="col-lg-4 bg-primary p-5 text-white d-none d-lg-block">
-                        <h4 class="mb-4">{{ __('Why Qayem?') }}</h4>
+                        <h4 class="mb-4">{{ __('Why Evalo?') }}</h4>
                         <ul class="list-unstyled">
                             <li class="mb-4 d-flex gap-3">
                                 <span class="fs-4">🚀</span>
@@ -248,7 +248,7 @@
                         <div class="mb-4">
                             <span class="display-1">🎉</span>
                         </div>
-                        <h4 class="mb-3">Welcome to QayemTech!</h4>
+                        <h4 class="mb-3">Welcome to Evalo!</h4>
                         <p class="text-secondary mb-4">Your administrative account has been created successfully.</p>
                         
                         <div class="glass-card mb-4 p-4 text-start bg-success bg-opacity-10 border-success border-opacity-25" style="max-width: 400px; margin: 0 auto; border: 1px solid rgba(25, 135, 84, 0.2); border-radius: 16px;">

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Qayem REST API Routes
+| Evalo REST API Routes
 |--------------------------------------------------------------------------
 |
 | Authentication: Laravel Sanctum (Bearer Token)

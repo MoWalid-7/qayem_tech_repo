@@ -20,7 +20,7 @@ class StatsOverview extends BaseWidget
 
         return [
             Stat::make('Registered Companies', Company::count())
-                ->description('Total companies using Qayem')
+                ->description('Total companies using Evalo')
                 ->descriptionIcon('heroicon-m-building-office-2')
                 ->color('primary')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
