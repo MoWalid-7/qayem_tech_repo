@@ -1,5 +1,5 @@
 /**
- * Qayem Dashboard JavaScript
+ * Evalo Dashboard JavaScript
  * Refactored to separate file for better maintainability.
  */
 
@@ -21,7 +21,7 @@ async function handleFormSubmit(formId, route, successReload = true) {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+                    'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
                 }
             });
             const result = await response.json();
@@ -97,7 +97,7 @@ function downloadReport() {
 
     // Add header for PDF
     const header = document.createElement('h2');
-    header.innerHTML = `QayemTech - Performance Report<br><small style="font-size: 0.5em; opacity: 0.7;">Generated: ${new Date().toLocaleDateString()}</small>`;
+    header.innerHTML = `Evalo - Performance Report<br><small style="font-size: 0.5em; opacity: 0.7;">Generated: ${new Date().toLocaleDateString()}</small>`;
     header.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
     header.style.paddingBottom = '15px';
     header.style.marginBottom = '25px';
@@ -144,11 +144,11 @@ async function deleteHrAccount() {
     }
 
     try {
-        const response = await fetch(window.QayemConfig.routes.hrDelete, {
+        const response = await fetch(window.EvaloConfig.routes.hrDelete, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+                'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
             },
             body: JSON.stringify({
                 id: id
@@ -201,7 +201,7 @@ async function runAI(route) {
         const response = await fetch(route, {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+                'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
             }
         });
         const result = await response.json();
@@ -225,7 +225,7 @@ async function openProfileModal(type, id) {
     document.getElementById('profRecommendations').innerText = '...';
 
     try {
-        const response = await fetch(`${window.QayemConfig.routes.profileGet}?type=${type}&id=${id}`);
+        const response = await fetch(`${window.EvaloConfig.routes.profileGet}?type=${type}&id=${id}`);
         const result = await response.json();
         if (result.success) {
             const data = result.data;
@@ -268,12 +268,12 @@ function showToast(message, type = 'success') {
 // Initializations
 document.addEventListener('DOMContentLoaded', () => {
     // Form Registrations
-    if (document.getElementById('addHrForm')) handleFormSubmit('addHrForm', window.QayemConfig.routes.hrStore);
-    if (document.getElementById('editHrForm')) handleFormSubmit('editHrForm', window.QayemConfig.routes.hrUpdate);
-    if (document.getElementById('addDeptForm')) handleFormSubmit('addDeptForm', window.QayemConfig.routes.deptStore);
-    if (document.getElementById('addManagerForm')) handleFormSubmit('addManagerForm', window.QayemConfig.routes.managerStore);
-    if (document.getElementById('addEmployeeForm')) handleFormSubmit('addEmployeeForm', window.QayemConfig.routes.employeeStore);
-    if (document.getElementById('editDeptForm')) handleFormSubmit('editDeptForm', window.QayemConfig.routes.deptUpdate);
+    if (document.getElementById('addHrForm')) handleFormSubmit('addHrForm', window.EvaloConfig.routes.hrStore);
+    if (document.getElementById('editHrForm')) handleFormSubmit('editHrForm', window.EvaloConfig.routes.hrUpdate);
+    if (document.getElementById('addDeptForm')) handleFormSubmit('addDeptForm', window.EvaloConfig.routes.deptStore);
+    if (document.getElementById('addManagerForm')) handleFormSubmit('addManagerForm', window.EvaloConfig.routes.managerStore);
+    if (document.getElementById('addEmployeeForm')) handleFormSubmit('addEmployeeForm', window.EvaloConfig.routes.employeeStore);
+    if (document.getElementById('editDeptForm')) handleFormSubmit('editDeptForm', window.EvaloConfig.routes.deptUpdate);
 
     // Metrics Form Handler
     const updateMetricsForm = document.getElementById('updateMetricsForm');
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMetricsForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             const type = document.getElementById('metricsType').value;
-            const route = type === 'employee' ? window.QayemConfig.routes.employeeMetrics : window.QayemConfig.routes.managerMetrics;
+            const route = type === 'employee' ? window.EvaloConfig.routes.employeeMetrics : window.EvaloConfig.routes.managerMetrics;
 
             const btn = this.querySelector('button[type="submit"]');
             btn.disabled = true;
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+                        'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
                     }
                 });
                 const result = await response.json();
@@ -334,16 +334,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Loading bubble
             const loadingBubble = document.createElement('div');
             loadingBubble.className = 'chat-bubble ai loading animate-fade-in';
-            loadingBubble.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> ${window.QayemConfig._i18n.thinking}`;
+            loadingBubble.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> ${window.EvaloConfig._i18n.thinking}`;
             container.appendChild(loadingBubble);
             container.scrollTop = container.scrollHeight;
 
             try {
-                const response = await fetch(window.QayemConfig.routes.aiChat, {
+                const response = await fetch(window.EvaloConfig.routes.aiChat, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': window.QayemConfig.csrfToken
+                        'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
                     },
                     body: JSON.stringify({ message: message })
                 });
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const aiBubble = document.createElement('div');
                 aiBubble.className = 'chat-bubble ai animate-fade-in shadow-sm';
-                aiBubble.innerText = result.response || window.QayemConfig._i18n.errorMsg;
+                aiBubble.innerText = result.response || window.EvaloConfig._i18n.errorMsg;
                 container.appendChild(aiBubble);
                 container.scrollTop = container.scrollHeight;
             } catch (err) {
@@ -374,9 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: window.QayemConfig.chartData.labels,
+                labels: window.EvaloConfig.chartData.labels,
                 datasets: [{
-                    label: window.QayemConfig.chartData.label,
+                    label: window.EvaloConfig.chartData.label,
                     data: [65, 72, 68, 85, 82, 90],
                     borderColor: '#4f46e5',
                     backgroundColor: gradient,

@@ -92,7 +92,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>QayemTech</h1>
+            <h1>Evalo</h1>
             <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.8;">Contact Form Submission</p>
         </div>
         <div class="content">
@@ -120,7 +120,7 @@
             </div>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} <a href="{{ config('app.url') }}" class="brand">QayemTech</a>. All rights reserved.
+            &copy; {{ date('Y') }} <a href="{{ config('app.url') }}" class="brand">Evalo</a>. All rights reserved.
             <br>
             Leading the way in AI-driven HR technology.
         </div>

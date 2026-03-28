@@ -1,6 +1,6 @@
-@extends('qayemtech.layout')
+@extends('evalo.layout')
 
-@section('title', 'Dashboard - QayemTech')
+@section('title', 'Dashboard - Evalo')
 @section('body_class', 'bg-dark')
 
 @section('styles')
@@ -252,7 +252,7 @@
 <nav class="qt-navbar">
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2 gap-md-3">
-            <a class="navbar-brand me-0 me-md-2" href="{{ route('home') }}">{{ __('QayemTech') }}</a>
+            <a class="navbar-brand me-0 me-md-2" href="{{ route('home') }}">{{ __('Evalo') }}</a>
             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 d-none d-md-inline-block">{{ $company->name }} {{ __('Dashboard') }}</span>
         </div>
         <div class="d-flex align-items-center gap-3 gap-md-4">
@@ -1005,7 +1005,7 @@
             <div class="d-flex align-items-center gap-2">
                 <div class="ai-avatar-small"><i class="bi bi-robot"></i></div>
                 <div>
-                    <div class="text-white fw-bold smaller">Qayem AI</div>
+                    <div class="text-white fw-bold smaller">Evalo AI</div>
                     <div class="text-success smaller" style="font-size: 0.7rem;"><i class="bi bi-circle-fill me-1"></i> {{ __('Online') }}</div>
                 </div>
             </div>
@@ -1037,7 +1037,7 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 @php
-$qayemConfig = [
+$evaloConfig = [
 'csrfToken' => csrf_token(),
 'routes' => [
 'hrStore' => route("hr.store"),
@@ -1068,7 +1068,7 @@ $qayemConfig = [
 ];
 @endphp
 <script>
-    window.QayemConfig = @json($qayemConfig);
+    window.EvaloConfig = @json($evaloConfig);
 </script>
-<script src="{{ asset('qayemtech/js/dashboard.js') }}"></script>
+<script src="{{ asset('evalo/js/dashboard.js') }}"></script>
 @endsection

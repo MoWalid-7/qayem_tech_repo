@@ -125,7 +125,7 @@ This is a strict requirement for a system integration. Do NOT wrap the JSON in m
 
         $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key={$this->apiKey}";
 
-        $fullPrompt = "System Context: You are a professional HR Assistant for QayemTech. 
+        $fullPrompt = "System Context: You are a professional HR Assistant for Evalo. 
 The user is currently using the interface in " . (app()->getLocale() == 'ar' ? 'Arabic' : 'English') . ". 
 YOU MUST respond to the user message in " . (app()->getLocale() == 'ar' ? 'Arabic' : 'English') . ".
 {$context}

@@ -1,5 +1,5 @@
 /**
- * QayemTech - Frontend Application Logic
+ * Evalo - Frontend Application Logic
  * No backend - Data is static/mocked
  */
 
