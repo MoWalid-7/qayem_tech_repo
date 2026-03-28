@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
             $table->integer('min_employees');
             $table->integer('max_employees');
             $table->float('price_per_employee');
+            $table->string('stripe_price_id')->nullable();
             $table->timestamps();
         });
     }

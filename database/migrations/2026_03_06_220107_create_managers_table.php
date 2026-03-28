@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
+            $table->date('hire_date')->nullable();
+            $table->integer('tasks_completed')->default(0);
+            $table->integer('tasks_requested')->default(0);
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->enum('role', ['general_manager', 'department_manager']);
             $table->timestamps();

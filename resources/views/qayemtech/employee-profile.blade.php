@@ -389,6 +389,7 @@
                     @foreach([
                     ['label' => __('Department'), 'value' => __($employee->department?->name ?? 'N/A')],
                     ['label' => __('Company'), 'value' => __($employee->company?->name ?? 'N/A')],
+                    ['label' => __('Hire Date'), 'value' => $employee->hire_date ? $employee->hire_date->format('Y-m-d') : __('N/A')],
                     ['label' => __('Email'), 'value' => $employee->email],
                     ] as $row)
                     <div class="d-flex justify-content-between py-2 border-bottom border-glass">
@@ -609,7 +610,7 @@
     // ===== Markdown to HTML renderer =====
     @if(isset($rawReportText))
         (function() {
-            const raw = (@json($rawReportText));
+            const raw = @json($rawReportText);
             let html = raw
                 .replace(/\r\n/g, '\n')
                 .replace(/### (.+)/g, '<h3>$1</h3>')
@@ -713,7 +714,7 @@
 
         const loadingBubble = document.createElement('div');
         loadingBubble.className = 'chat-bubble ai loading animate-fade-in';
-        loadingBubble.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ' + (@json(__('Thinking...')));
+        loadingBubble.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ' + @json(__('Thinking...'));
         container.appendChild(loadingBubble);
         container.scrollTop = container.scrollHeight;
 
@@ -733,14 +734,14 @@
 
             const aiBubble = document.createElement('div');
             aiBubble.className = 'chat-bubble ai animate-fade-in';
-            aiBubble.innerText = result.response || (@json(__('Sorry, an error occurred.')));
+            aiBubble.innerText = result.response || @json(__('Sorry, an error occurred.'));
             container.appendChild(aiBubble);
             container.scrollTop = container.scrollHeight;
         } catch (err) {
             if (loadingBubble.parentNode) container.removeChild(loadingBubble);
             const errBubble = document.createElement('div');
             errBubble.className = 'chat-bubble ai animate-fade-in';
-            errBubble.innerText = (@json(__('Failed to get a response. Please try again.')));
+            errBubble.innerText = @json(__('Failed to get a response. Please try again.'));
             container.appendChild(errBubble);
         }
     });

@@ -410,7 +410,8 @@ class QayemWebController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:managers,email',
             'password' => 'required|min:6',
-            'department_id' => 'nullable|exists:departments,id'
+            'department_id' => 'nullable|exists:departments,id',
+            'hire_date' => 'nullable|date',
         ]);
         $user = Auth::guard('manager')->user() ?? Auth::guard('hr')->user();
 
@@ -418,6 +419,7 @@ class QayemWebController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'hire_date' => $request->hire_date,
             'company_id' => $user->company_id,
             'role' => 'department_manager',
         ]);
@@ -469,6 +471,7 @@ class QayemWebController extends Controller
             'attendance_rate' => 'required|integer|min:0|max:100',
             'tasks_completed' => 'required|integer|min:0',
             'tasks_requested' => 'required|integer|min:0',
+            'hire_date' => 'nullable|date',
         ]);
 
         $employee = \App\Models\Employee::findOrFail($request->employee_id);
@@ -482,6 +485,7 @@ class QayemWebController extends Controller
             'attendance_rate' => $request->attendance_rate,
             'tasks_completed' => $request->tasks_completed,
             'tasks_requested' => $request->tasks_requested,
+            'hire_date' => $request->hire_date,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Performance data updated!']);
@@ -496,6 +500,7 @@ class QayemWebController extends Controller
             'manager_id' => 'required|exists:managers,id',
             'tasks_completed' => 'required|integer|min:0',
             'tasks_requested' => 'required|integer|min:0',
+            'hire_date' => 'nullable|date',
         ]);
 
         $manager = \App\Models\Manager::findOrFail($request->manager_id);
@@ -508,6 +513,7 @@ class QayemWebController extends Controller
         $manager->update([
             'tasks_completed' => $request->tasks_completed,
             'tasks_requested' => $request->tasks_requested,
+            'hire_date' => $request->hire_date,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Manager performance data updated!']);

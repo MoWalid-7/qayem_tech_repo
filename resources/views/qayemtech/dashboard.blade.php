@@ -535,7 +535,7 @@
                                                     <span class="text-secondary smaller italic">{{ __('Unassigned') }}</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center text-secondary small">{{ $m->hire_date ?? __('N/A') }}</td>
+                                                <td class="text-center text-secondary small">{{ $m->hire_date ? $m->hire_date->format('Y-m-d') : __('N/A') }}</td>
                                                 <td class="text-center">
                                                     <span class="text-success fw-bold">{{ $m->tasks_completed }}</span>
                                                     <span class="text-secondary mx-1">/</span>
@@ -550,6 +550,8 @@
                                                         </button>
                                                         <button class="btn btn-sm btn-outline-primary border-glass rounded-pill px-3"
                                                             data-id="{{ $m->id }}" data-name="{{ $m->name }}" data-type="manager"
+                                                            data-hire-date="{{ $m->hire_date ? $m->hire_date->format('Y-m-d') : '' }}"
+                                                            data-tasks-req="{{ $m->tasks_requested }}" data-tasks-done="{{ $m->tasks_completed }}"
                                                             onclick="openMetricsModal(this)">
                                                             {{ __('Update') }}
                                                         </button>
@@ -581,7 +583,7 @@
                                             <tr class="text-secondary smaller text-uppercase">
                                                 <th class="border-0 px-4">{{ __('Name') }}</th>
                                                 <th class="border-0">{{ __('Position / Dept') }}</th>
-                                                <th class="border-0 text-center">{{ __('Attendance') }}</th>
+                                                <th class="border-0 text-center">{{ __('Hire Date') }}</th>
                                                 <th class="border-0 text-center">{{ __('Done / Req') }}</th>
                                                 <th class="border-0 text-end px-4">{{ __('Actions') }}</th>
                                             </tr>
@@ -595,6 +597,7 @@
                                                     <div class="smaller opacity-50">{{ $emp->department ? $emp->department->name : __('N/A') }}</div>
                                                 </td>
                                                 <td class="text-center text-secondary">{{ $emp->attendance_rate ?? 0 }}%</td>
+                                                <td class="text-center text-secondary small">{{ $emp->hire_date ? $emp->hire_date->format('Y-m-d') : __('N/A') }}</td>
                                                 <td class="text-center">
                                                     <span class="text-success fw-bold">{{ $emp->tasks_completed }}</span>
                                                     <span class="text-secondary mx-1">/</span>
@@ -609,6 +612,8 @@
                                                         </button>
                                                         <button class="btn btn-sm btn-outline-primary border-glass rounded-pill px-3"
                                                             data-id="{{ $emp->id }}" data-name="{{ $emp->name }}" data-type="employee"
+                                                            data-hire-date="{{ $emp->hire_date ? $emp->hire_date->format('Y-m-d') : '' }}"
+                                                            data-attendance="{{ $emp->attendance_rate }}" data-tasks-req="{{ $emp->tasks_requested }}" data-tasks-done="{{ $emp->tasks_completed }}"
                                                             onclick="openMetricsModal(this)">
                                                             {{ __('Update') }}
                                                         </button>
@@ -881,9 +886,19 @@
                 <input type="hidden" name="id" id="metricsId">
                 <input type="hidden" name="type" id="metricsType">
                 <div class="modal-body">
-                    <div class="form-floating mb-3" id="attendanceFieldContainer">
-                        <input type="number" name="attendance_rate" id="metricsAttendance" class="form-control" placeholder="{{ __('Attendance') }}" min="0" max="100">
-                        <label>{{ __('Attendance Rate (%)') }}</label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3" id="attendanceFieldContainer">
+                                <input type="number" name="attendance_rate" id="metricsAttendance" class="form-control" placeholder="{{ __('Attendance') }}" min="0" max="100">
+                                <label>{{ __('Attendance Rate (%)') }}</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" name="hire_date" id="metricsHireDate" class="form-control" placeholder="{{ __('Hire Date') }}">
+                                <label>{{ __('Hire Date') }}</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-6">
@@ -1053,7 +1068,7 @@ $qayemConfig = [
 ];
 @endphp
 <script>
-    window.QayemConfig = (@json($qayemConfig));
+    window.QayemConfig = @json($qayemConfig);
 </script>
 <script src="{{ asset('qayemtech/js/dashboard.js') }}"></script>
 @endsection
