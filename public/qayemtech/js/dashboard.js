@@ -170,17 +170,26 @@ function openMetricsModal(element) {
     const id = element.getAttribute('data-id');
     const name = element.getAttribute('data-name');
     const type = element.getAttribute('data-type');
+    const hireDate = element.getAttribute('data-hire-date');
+    const tasksReq = element.getAttribute('data-tasks-req');
+    const tasksDone = element.getAttribute('data-tasks-done');
 
     document.getElementById('metricsId').value = id;
     document.getElementById('metricsType').value = type;
     document.getElementById('metricsEmployeeName').innerText = name;
+    document.getElementById('metricsHireDate').value = hireDate || '';
+    document.getElementById('metricsRequested').value = tasksReq || 0;
+    document.getElementById('metricsCompleted').value = tasksDone || 0;
 
     if (type === 'manager') {
         document.getElementById('attendanceFieldContainer').classList.add('d-none');
         document.getElementById('metricsAttendance').required = false;
+        document.getElementById('metricsAttendance').value = '';
     } else {
+        const attendance = element.getAttribute('data-attendance');
         document.getElementById('attendanceFieldContainer').classList.remove('d-none');
         document.getElementById('metricsAttendance').required = true;
+        document.getElementById('metricsAttendance').value = attendance || 0;
     }
 
     new bootstrap.Modal('#metricsModal').show();

@@ -12,6 +12,10 @@ class Manager extends Authenticatable
     use HasFactory, HasApiTokens;
     protected $guarded = [];
 
+    protected $casts = [
+        'hire_date' => 'date',
+    ];
+
     public function isGM()
     {
         return $this->role === 'general_manager';

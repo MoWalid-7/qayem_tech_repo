@@ -30,6 +30,7 @@ class Employee extends Authenticatable implements FilamentUser
     {
         return [
             'password' => 'hashed',
+            'hire_date' => 'date',
         ];
     }
 
