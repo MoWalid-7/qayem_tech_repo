@@ -181,16 +181,10 @@ function openMetricsModal(element) {
     document.getElementById('metricsRequested').value = tasksReq || 0;
     document.getElementById('metricsCompleted').value = tasksDone || 0;
 
-    if (type === 'manager') {
-        document.getElementById('attendanceFieldContainer').classList.add('d-none');
-        document.getElementById('metricsAttendance').required = false;
-        document.getElementById('metricsAttendance').value = '';
-    } else {
-        const attendance = element.getAttribute('data-attendance');
-        document.getElementById('attendanceFieldContainer').classList.remove('d-none');
-        document.getElementById('metricsAttendance').required = true;
-        document.getElementById('metricsAttendance').value = attendance || 0;
-    }
+    const attendance = element.getAttribute('data-attendance');
+    document.getElementById('attendanceFieldContainer').classList.remove('d-none');
+    document.getElementById('metricsAttendance').required = true;
+    document.getElementById('metricsAttendance').value = attendance || 0;
 
     new bootstrap.Modal('#metricsModal').show();
 }
@@ -377,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: window.EvaloConfig.chartData.labels,
                 datasets: [{
                     label: window.EvaloConfig.chartData.label,
-                    data: [65, 72, 68, 85, 82, 90],
+                    data: window.EvaloConfig.chartData.data || [0, 0, 0, 0, 0, 0],
                     borderColor: '#4f46e5',
                     backgroundColor: gradient,
                     fill: true,
@@ -434,73 +428,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealObserver = new IntersectionObserver(revealCallback, { threshold: 0.1 });
     document.querySelectorAll('.reveal-fade-up, .reveal-scale-in').forEach(el => revealObserver.observe(el));
 
-    // Floating Chat logic
-    initFloatingChat();
 });
-
-// Floating Chat logic
-function initFloatingChat() {
-    const floatingChatBtn = document.getElementById('floatingChatBtn');
-    const floatingChatWindow = document.getElementById('floatingChatWindow');
-    const container = document.querySelector('.floating-chat-container');
-    const aiMessageInput = document.getElementById('aiMessageInput');
-
-    if (!container || !floatingChatBtn || !floatingChatWindow) return;
-
-    let isDragging = false;
-    let startX, startY, initialRight, initialBottom;
-
-    floatingChatBtn.addEventListener('click', (e) => {
-        if (isDragging) return;
-        e.stopPropagation();
-        floatingChatWindow.classList.toggle('active');
-        if (floatingChatWindow.classList.contains('active') && aiMessageInput) {
-            aiMessageInput.focus();
-        }
-    });
-
-    container.addEventListener('mousedown', startDrag);
-    container.addEventListener('touchstart', startDrag, { passive: false });
-
-    function startDrag(e) {
-        if (!e.target.closest('#floatingChatBtn') && !e.target.closest('.chat-header')) return;
-        isDragging = false;
-        const event = e.type === 'touchstart' ? e.touches[0] : e;
-        startX = event.clientX;
-        startY = event.clientY;
-        const style = window.getComputedStyle(container);
-        initialRight = parseInt(style.right);
-        initialBottom = parseInt(style.bottom);
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('mouseup', stopDrag);
-        document.addEventListener('touchend', stopDrag);
-    }
-
-    function drag(e) {
-        const event = e.type === 'touchmove' ? e.touches[0] : e;
-        const dx = startX - event.clientX;
-        const dy = startY - event.clientY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
-        if (isDragging) {
-            if (e.cancelable) e.preventDefault();
-            container.style.right = (initialRight + dx) + 'px';
-            container.style.bottom = (initialBottom + dy) + 'px';
-            container.style.left = 'auto';
-        }
-    }
-
-    function stopDrag() {
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('touchmove', drag);
-        document.removeEventListener('mouseup', stopDrag);
-        document.removeEventListener('touchend', stopDrag);
-        setTimeout(() => { isDragging = false; }, 0);
-    }
-
-    document.addEventListener('click', (e) => {
-        if (!floatingChatWindow.contains(e.target) && !floatingChatBtn.contains(e.target)) {
-            floatingChatWindow.classList.remove('active');
-        }
-    });
-}

@@ -13,7 +13,7 @@ class GeminiService
     public function __construct()
     {
         $this->apiKey = config('services.gemini.api_key', '');
-        $this->model = config('services.gemini.model', 'gemini-2.5-flash');
+        $this->model = config('services.gemini.model', 'gemini-1.5-flash');
     }
 
     public function generateEvaluation($entity)
@@ -63,7 +63,7 @@ This is a strict requirement for a system integration. Do NOT wrap the JSON in m
         ];
 
         try {
-            $response = Http::post($url, $payload);
+            $response = Http::timeout(60)->post($url, $payload);
 
             if ($response->successful()) {
                 $responseData = $response->json();
@@ -143,7 +143,7 @@ User Message: {$prompt}";
         ];
 
         try {
-            $response = Http::post($url, $payload);
+            $response = Http::timeout(60)->post($url, $payload);
             if ($response->successful()) {
                 $responseData = $response->json();
                 return $responseData['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from AI.';

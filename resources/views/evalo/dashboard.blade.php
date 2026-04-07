@@ -22,158 +22,10 @@
         --bs-table-bg: transparent;
     }
 
-    .floating-chat-container {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 9999;
-        cursor: grab;
-    }
-
-    .floating-chat-container:active {
-        cursor: grabbing;
-    }
-
-    .floating-chat-btn {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--primary);
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        cursor: pointer;
-    }
-
-    .floating-chat-btn:hover {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .floating-chat-window {
-        position: absolute;
-        bottom: 80px;
-        right: 0;
-        width: 350px;
-        height: 500px;
-        min-width: 300px;
-        min-height: 400px;
-        max-width: 80vw;
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(20px) scale(0.95);
-        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform-origin: bottom right;
-        pointer-events: none;
-        overflow: hidden;
-        resize: both;
-    }
-
-    /* Resize handle indicator */
-    .floating-chat-window::after {
-        content: "";
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        width: 15px;
-        height: 15px;
-        border-top: 2px solid rgba(255, 255, 255, 0.2);
-        border-left: 2px solid rgba(255, 255, 255, 0.2);
-        cursor: nw-resize;
-    }
-
-    .floating-chat-window.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0) scale(1);
-        pointer-events: all;
-    }
-
-    .ai-avatar-small {
-        width: 32px;
-        height: 32px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    }
-
-    .chat-messages {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .chat-bubble {
-        max-width: 85%;
-        padding: 10px 14px;
-        border-radius: 18px;
-        font-size: 0.85rem;
-        line-height: 1.4;
-    }
-
-    .chat-bubble.ai {
-        align-self: flex-start;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: white;
-        border-bottom-left-radius: 4px;
-    }
-
-    .chat-bubble.user {
-        align-self: flex-end;
-        background: var(--primary);
-        color: white;
-        border-bottom-right-radius: 4px;
-    }
-
-    .chat-bubble.loading {
-        background: rgba(255, 255, 255, 0.03);
-        font-style: italic;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    @keyframes animate-fade-in {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: animate-fade-in 0.3s ease forwards;
-    }
-
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
-        }
-
-        70% {
-            box-shadow: 0 0 0 15px rgba(79, 70, 229, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
-        }
-    }
-
-    .pulse-animation {
-        animation: pulse 2s infinite;
+    .chart-container {
+        position: relative;
+        height: 250px;
+        width: 100%;
     }
 
     /* New Dashboard Enhancements */
@@ -238,12 +90,6 @@
         color: white;
         margin-top: 0.25rem;
     }
-
-    .chart-container {
-        position: relative;
-        height: 250px;
-        width: 100%;
-    }
 </style>
 @endsection
 
@@ -257,7 +103,13 @@
         </div>
         <div class="d-flex align-items-center gap-3 gap-md-4">
             <div class="text-end d-none d-sm-block lh-1">
+                @if($user instanceof \App\Models\Manager)
+                <a href="{{ route('manager.profile') }}" class="text-white small fw-bold mb-1 text-decoration-none d-block hover-opacity">
+                    {{ $user->name }} <i class="bi bi-person-circle ms-1 small opacity-50"></i>
+                </a>
+                @else
                 <div class="text-white small fw-bold mb-1">{{ $user->name }}</div>
+                @endif
                 <div class="text-secondary text-uppercase fw-medium" style="font-size: 0.65rem; letter-spacing: 0.5px;">
                     @if($user instanceof \App\Models\Manager)
                     {{ $user->isGM() ? __('General Manager') : __('Department Manager') }}
@@ -305,7 +157,7 @@
             <div class="dashboard-stat-card premium-card reveal-fade-up stagger-3">
                 <div class="icon-box bg-emerald"><i class="bi bi-graph-up-arrow"></i></div>
                 <div class="stat-label">{{ __('Avg Performance') }}</div>
-                <div class="stat-value">8.4<small class="text-secondary fw-normal fs-6">/10</small></div>
+                <div class="stat-value">{{ number_format($avgPerformance, 1) }}<small class="text-secondary fw-normal fs-6">/10</small></div>
             </div>
         </div>
         <div class="col-md-3">
@@ -358,6 +210,8 @@
                         <h6 class="text-secondary text-uppercase smaller mb-3">{{ __('Subscription Details') }}</h6>
                         @php
                         $isGM = ($user instanceof \App\Models\Manager && $user->isGM());
+                        $isDM = ($user instanceof \App\Models\Manager && $user->isDM());
+                        $isHR = ($user instanceof \App\Models\HrUser);
                         $sub = $company->subscription('default');
                         @endphp
                         <div class="d-flex align-items-end gap-2 mb-3">
@@ -367,7 +221,7 @@
                         <div class="progress bg-dark mb-2" style="height: 6px;">
                             <div class="progress-bar bg-primary" style="width: 75%"></div>
                         </div>
-                        <div class="text-secondary smaller">{{ __('Renewal date:') }} {{ $sub ? $sub->ends_at?->format('F d, Y') : 'Oct 14, 2026' }}</div>
+                        <div class="text-secondary smaller">{{ __('Renewal date:') }} {{ $company->created_at->addYear()->translatedFormat('F d, Y') }}</div>
                         <div class="mt-3">
                             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3">{{ __('VIP Support') }}</span>
                         </div>
@@ -449,11 +303,13 @@
                         <div class="card-header border-glass bg-transparent p-0">
                             <ul class="nav nav-tabs border-0 p-2 gap-2" id="hrTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active rounded-pill px-4 border-0" id="depts-tab" data-bs-toggle="tab" data-bs-target="#depts" type="button">{{ __('Departments') }}</button>
+                                    <button class="nav-link active rounded-pill px-4 border-0" id="depts-tab" data-bs-toggle="tab" data-bs-target="#depts" type="button">{{ $isDM ? __('My Department') : __('Departments') }}</button>
                                 </li>
+                                @if(!$isDM)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link rounded-pill px-4 border-0" id="managers-tab" data-bs-toggle="tab" data-bs-target="#managers" type="button">{{ __('Dept Managers') }}</button>
                                 </li>
+                                @endif
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link rounded-pill px-4 border-0" id="employees-tab" data-bs-toggle="tab" data-bs-target="#employees" type="button">{{ __('Employees') }}</button>
                                 </li>
@@ -463,10 +319,12 @@
                             <!-- Departments Tab -->
                             <div class="tab-pane fade show active" id="depts" role="tabpanel">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h6 class="text-secondary text-uppercase smaller mb-0">{{ __('Company Departments') }}</h6>
+                                    <h6 class="text-secondary text-uppercase smaller mb-0">{{ $isDM ? __('My Department Details') : __('Company Departments') }}</h6>
+                                    @if(!$isDM)
                                     <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#addDeptModal">
                                         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Dept') }}
                                     </button>
+                                    @endif
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-dark table-hover border-glass align-middle">
@@ -502,9 +360,11 @@
                             <div class="tab-pane fade" id="managers" role="tabpanel">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h6 class="text-secondary text-uppercase smaller mb-0">{{ __('Department Managers') }}</h6>
+                                    @if(!$isDM)
                                     <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#addManagerModal">
                                         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Manager') }}
                                     </button>
+                                    @endif
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-dark table-hover border-glass align-middle">
@@ -513,6 +373,7 @@
                                                 <th class="border-0 px-4">{{ __('Name') }}</th>
                                                 <th class="border-0">{{ __('Email') }}</th>
                                                 <th class="border-0">{{ __('Dept Assigned') }}</th>
+                                                <th class="border-0 text-center">{{ __('Attendance Rate') }}</th>
                                                 <th class="border-0 text-center">{{ __('Hire Date') }}</th>
                                                 <th class="border-0 text-center">{{ __('Done / Req') }}</th>
                                                 <th class="border-0 text-end px-4">{{ __('Actions') }}</th>
@@ -535,6 +396,7 @@
                                                     <span class="text-secondary smaller italic">{{ __('Unassigned') }}</span>
                                                     @endif
                                                 </td>
+                                                <td class="text-center text-secondary small">{{ $m->attendance_rate ?? 0 }}%</td>
                                                 <td class="text-center text-secondary small">{{ $m->hire_date ? $m->hire_date->format('Y-m-d') : __('N/A') }}</td>
                                                 <td class="text-center">
                                                     <span class="text-success fw-bold">{{ $m->tasks_completed }}</span>
@@ -550,6 +412,7 @@
                                                         </button>
                                                         <button class="btn btn-sm btn-outline-primary border-glass rounded-pill px-3"
                                                             data-id="{{ $m->id }}" data-name="{{ $m->name }}" data-type="manager"
+                                                            data-attendance="{{ $m->attendance_rate }}"
                                                             data-hire-date="{{ $m->hire_date ? $m->hire_date->format('Y-m-d') : '' }}"
                                                             data-tasks-req="{{ $m->tasks_requested }}" data-tasks-done="{{ $m->tasks_completed }}"
                                                             onclick="openMetricsModal(this)">
@@ -572,10 +435,12 @@
                             <!-- Employees Tab -->
                             <div class="tab-pane fade" id="employees" role="tabpanel">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h6 class="text-secondary text-uppercase smaller mb-0">{{ __('Company Staff') }}</h6>
+                                    <h6 class="text-secondary text-uppercase smaller mb-0">{{ $isDM ? __('My Department Staff') : __('Company Staff') }}</h6>
+                                    @if(!$isDM)
                                     <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                                         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Employee') }}
                                     </button>
+                                    @endif
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-dark table-hover border-glass align-middle">
@@ -583,6 +448,7 @@
                                             <tr class="text-secondary smaller text-uppercase">
                                                 <th class="border-0 px-4">{{ __('Name') }}</th>
                                                 <th class="border-0">{{ __('Position / Dept') }}</th>
+                                                <th class="border-0 text-center">{{ __('Attendance Rate') }}</th>
                                                 <th class="border-0 text-center">{{ __('Hire Date') }}</th>
                                                 <th class="border-0 text-center">{{ __('Done / Req') }}</th>
                                                 <th class="border-0 text-end px-4">{{ __('Actions') }}</th>
@@ -998,40 +864,6 @@
     </div>
 </div>
 
-<!-- Floating AI Chat Widget -->
-<div class="floating-chat-container">
-    <div class="floating-chat-window glass-card" id="floatingChatWindow">
-        <div class="chat-header p-3 border-glass d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-                <div class="ai-avatar-small"><i class="bi bi-robot"></i></div>
-                <div>
-                    <div class="text-white fw-bold smaller">Evalo AI</div>
-                    <div class="text-success smaller" style="font-size: 0.7rem;"><i class="bi bi-circle-fill me-1"></i> {{ __('Online') }}</div>
-                </div>
-            </div>
-            <button class="btn btn-sm btn-link text-secondary p-0" onclick="document.getElementById('floatingChatWindow').classList.remove('active')">
-                <i class="bi bi-dash-lg"></i>
-            </button>
-        </div>
-        <div class="chat-messages p-3 flex-grow-1 overflow-auto custom-scrollbar" id="chatMessages">
-            <div class="chat-bubble ai animate-fade-in shadow-sm">
-                {{ __('Hello :name! 👋 How can I help you today?', ['name' => explode(' ', $user->name)[0]]) }}
-            </div>
-        </div>
-        <div class="chat-input-area p-3 border-glass">
-            <form id="aiChatForm" class="d-flex gap-2">
-                @csrf
-                <input type="text" id="aiMessageInput" class="form-control bg-dark border-glass text-white rounded-pill px-3" placeholder="{{ __('Ask anything...') }}" required autocomplete="off">
-                <button type="submit" class="btn btn-primary rounded-circle p-0" style="width: 40px; height: 40px;">
-                    <i class="bi bi-send-fill"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-    <button class="floating-chat-btn shadow-lg pulse-animation" id="floatingChatBtn" style="z-index: 10000;" title="AI Assistant">
-        <i class="bi bi-chat-dots-fill"></i>
-    </button>
-</div>
 @endsection
 
 @section('scripts')
@@ -1063,12 +895,13 @@ $evaloConfig = [
 ],
 'chartData' => [
 'label' => __("Efficiency"),
-'labels' => [__("Jan"), __("Feb"), __("Mar"), __("Apr"), __("May"), __("Jun")]
+'labels' => $chartLabels,
+'data' => $chartDataValues
 ]
 ];
 @endphp
 <script>
-    window.EvaloConfig = @json($evaloConfig);
+    window.EvaloConfig = Object.assign(window.EvaloConfig || {}, @json($evaloConfig));
 </script>
 <script src="{{ asset('evalo/js/dashboard.js') }}"></script>
 @endsection
