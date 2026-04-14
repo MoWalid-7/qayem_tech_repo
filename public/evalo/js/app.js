@@ -86,11 +86,148 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Dashboard Initialization
-    if (window.location.pathname.includes('dashboard.html')) {
-        renderDashboard();
-    }
+    // Floating Chat Initialization
+    initFloatingChat();
 });
+
+function initFloatingChat() {
+    const container = document.querySelector('.floating-chat-container');
+    const floatingChatBtn = document.getElementById('floatingChatBtn');
+    const floatingChatWindow = document.getElementById('floatingChatWindow');
+    const aiMessageInput = document.getElementById('aiMessageInput');
+    const maximizeBtn = document.getElementById('maximizeChat');
+    const aiChatForm = document.getElementById('aiChatForm');
+
+    if (!container || !floatingChatBtn || !floatingChatWindow) return;
+
+    let isDragging = false;
+    let startX, startY, initialRight, initialBottom;
+
+    floatingChatBtn.addEventListener('click', (e) => {
+        if (isDragging) return;
+        e.stopPropagation();
+        floatingChatWindow.classList.toggle('active');
+        if (floatingChatWindow.classList.contains('active') && aiMessageInput) {
+            aiMessageInput.focus();
+        }
+    });
+
+    if (maximizeBtn) {
+        maximizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            floatingChatWindow.classList.toggle('maximized');
+            const icon = maximizeBtn.querySelector('i');
+            if (floatingChatWindow.classList.contains('maximized')) {
+                icon.classList.replace('bi-arrows-fullscreen', 'bi-fullscreen-exit');
+            } else {
+                icon.classList.replace('bi-fullscreen-exit', 'bi-arrows-fullscreen');
+            }
+        });
+    }
+
+    container.addEventListener('mousedown', startDrag);
+    container.addEventListener('touchstart', startDrag, { passive: false });
+
+    function startDrag(e) {
+        if (!e.target.closest('#floatingChatBtn') && !e.target.closest('.chat-header')) return;
+        if (e.target.closest('button')) return; // Don't drag when clicking buttons
+
+        isDragging = false;
+        const event = e.type === 'touchstart' ? e.touches[0] : e;
+        startX = event.clientX;
+        startY = event.clientY;
+        const style = window.getComputedStyle(container);
+        initialRight = parseInt(style.right);
+        initialBottom = parseInt(style.bottom);
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    function drag(e) {
+        const event = e.type === 'touchmove' ? e.touches[0] : e;
+        const dx = startX - event.clientX;
+        const dy = startY - event.clientY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+        if (isDragging) {
+            if (e.cancelable) e.preventDefault();
+            container.style.right = (initialRight + dx) + 'px';
+            container.style.bottom = (initialBottom + dy) + 'px';
+            container.style.left = 'auto';
+        }
+    }
+
+    function stopDrag() {
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchend', stopDrag);
+        setTimeout(() => { isDragging = false; }, 0);
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!floatingChatWindow.contains(e.target) && !floatingChatBtn.contains(e.target)) {
+            floatingChatWindow.classList.remove('active');
+        }
+    });
+
+    // Handle Chat Form Submission
+    if (aiChatForm) {
+        aiChatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = aiMessageInput.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+
+            // Add user message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user animate-fade-in shadow-sm';
+            userBubble.textContent = message;
+            chatMessages.appendChild(userBubble);
+
+            aiMessageInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Add loading bubble
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'chat-bubble ai animate-fade-in shadow-sm loading';
+            loadingBubble.textContent = window.EvaloConfig._i18n.thinking;
+            chatMessages.appendChild(loadingBubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch(window.EvaloConfig.routes.aiChat, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                chatMessages.removeChild(loadingBubble);
+
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'chat-bubble ai animate-fade-in shadow-sm';
+                const rawResponse = data.response || window.EvaloConfig._i18n.errorMsg;
+                // Use marked to parse markdown, but keep it safe
+                aiBubble.innerHTML = typeof marked !== 'undefined' ? marked.parse(rawResponse) : rawResponse;
+                chatMessages.appendChild(aiBubble);
+            } catch (error) {
+                chatMessages.removeChild(loadingBubble);
+                const errorBubble = document.createElement('div');
+                errorBubble.className = 'chat-bubble ai animate-fade-in shadow-sm';
+                errorBubble.textContent = window.EvaloConfig._i18n.errorMsg;
+                chatMessages.appendChild(errorBubble);
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+}
 
 function renderDashboard() {
     const user = Auth.getUser();

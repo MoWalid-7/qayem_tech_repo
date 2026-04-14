@@ -1,6 +1,6 @@
 @extends('evalo.layout')
 
-@section('title', __('My Profile') . ' - ' . $employee->name)
+@section('title', __('My Profile') . ' - ' . $manager->name)
 @section('body_class', 'bg-dark')
 
 @section('styles')
@@ -127,6 +127,18 @@
         margin-bottom: 0.5rem;
     }
 
+    .report-body ul {
+        padding-left: 1.25rem;
+        color: #cbd5e1;
+        font-size: 0.875rem;
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .report-body strong {
+        color: #e2e8f0;
+    }
+
     .report-body em {
         color: #94a3b8;
     }
@@ -233,7 +245,7 @@
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 d-none d-md-inline-block">
-                {{ __('Employee Portal') }}
+                {{ __('Manager Portal') }}
             </span>
             <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light border-glass rounded-pill px-3">
                 <i class="bi bi-arrow-left me-1"></i> {{ __('Back to Dashboard') }}
@@ -241,8 +253,10 @@
         </div>
         <div class="d-flex align-items-center gap-3">
             <div class="text-end d-none d-sm-block lh-1">
-                <div class="text-white small fw-bold mb-1">{{ $employee->name }}</div>
-                <div class="text-secondary text-uppercase fw-medium" style="font-size:0.65rem; letter-spacing:0.5px;">{{ __('Employee') }}</div>
+                <div class="text-white small fw-bold mb-1">{{ $manager->name }}</div>
+                <div class="text-secondary text-uppercase fw-medium" style="font-size:0.65rem; letter-spacing:0.5px;">
+                    {{ $manager->isGM() ? __('General Manager') : __('Dept Manager') }}
+                </div>
             </div>
 
             <div class="dropdown">
@@ -271,19 +285,19 @@
         <div class="col-lg-4">
             <div class="glass-card p-4 h-100 animate-up text-center d-flex flex-column align-items-center justify-content-center">
                 <div class="company-initials mb-3" style="width:80px;height:80px;font-size:2rem;">
-                    {{ strtoupper(substr($employee->name, 0, 1)) }}
+                    {{ strtoupper(substr($manager->name, 0, 1)) }}
                 </div>
-                <h4 class="text-white mb-1">{{ $employee->name }}</h4>
+                <h4 class="text-white mb-1">{{ $manager->name }}</h4>
                 <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 mb-4">
-                    {{ __('Employee') }}
+                    {{ $manager->isGM() ? __('General Manager') : __('Dept Manager') }}
                 </span>
 
                 <div class="w-100 mt-2">
                     @foreach([
-                    ['label' => __('Department'), 'value' => __($employee->department?->name ?? 'N/A')],
-                    ['label' => __('Company'), 'value' => __($employee->company?->name ?? 'N/A')],
-                    ['label' => __('Hire Date'), 'value' => $employee->hire_date ? $employee->hire_date->format('Y-m-d') : __('N/A')],
-                    ['label' => __('Email'), 'value' => $employee->email],
+                    ['label' => __('Department'), 'value' => __($manager->department?->name ?? 'N/A')],
+                    ['label' => __('Company'), 'value' => __($manager->company?->name ?? 'N/A')],
+                    ['label' => __('Hire Date'), 'value' => $manager->hire_date ? $manager->hire_date->format('Y-m-d') : __('N/A')],
+                    ['label' => __('Email'), 'value' => $manager->email],
                     ] as $row)
                     <div class="d-flex justify-content-between py-2 border-bottom border-glass">
                         <span class="text-secondary small">{{ $row['label'] }}</span>
@@ -318,19 +332,19 @@
             <div class="row g-3">
                 <div class="col-4">
                     <div class="stat-pill">
-                        <div class="text-white fw-bold fs-4">{{ $employee->attendance_rate ?? 0 }}%</div>
+                        <div class="text-white fw-bold fs-4">{{ $manager->attendance_rate ?? 0 }}%</div>
                         <div class="text-secondary smaller">{{ __('Attendance') }}</div>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="stat-pill">
-                        <div class="text-success fw-bold fs-4">{{ $employee->tasks_completed ?? 0 }}</div>
+                        <div class="text-success fw-bold fs-4">{{ $manager->tasks_completed ?? 0 }}</div>
                         <div class="text-secondary smaller">{{ __('Tasks Done') }}</div>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="stat-pill">
-                        @php $rate = ($employee->tasks_requested ?? 0) > 0 ? round(($employee->tasks_completed / $employee->tasks_requested) * 100) : 0; @endphp
+                        @php $rate = ($manager->tasks_requested ?? 0) > 0 ? round(($manager->tasks_completed / $manager->tasks_requested) * 100) : 0; @endphp
                         <div class="text-primary fw-bold fs-4">{{ $rate }}%</div>
                         <div class="text-secondary smaller">{{ __('Completion') }}</div>
                     </div>
@@ -357,7 +371,7 @@
                             <span class="badge bg-primary bg-opacity-10 text-primary-light smaller px-2">{{ __('Live Update') }}</span>
                         </div>
                         <div class="chart-container-profile">
-                            <canvas id="employeeTrendChart"></canvas>
+                            <canvas id="managerTrendChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -437,16 +451,15 @@
             <div class="text-center py-5">
                 <i class="bi bi-clipboard-x text-secondary" style="font-size:3rem"></i>
                 <p class="text-secondary mt-3 mb-0">{{ __('No evaluation report yet.') }}</p>
-                <p class="text-secondary small">{{ __('Your manager will generate an AI evaluation for you soon.') }}</p>
+                <p class="text-secondary small">{{ __('A General Manager or HR will generate an AI evaluation for you soon.') }}</p>
             </div>
             @endif
         </div>
     </div>
 </div>
 
-
 {{-- ===== Row 3: Previous Evaluations ===== --}}
-@php $oldEvals = $latestEvaluation ? $employee->evaluations->where('id', '!=', $latestEvaluation->id) : $employee->evaluations; @endphp
+@php $oldEvals = $latestEvaluation ? $manager->evaluations->where('id', '!=', $latestEvaluation->id) : $manager->evaluations; @endphp
 @if($oldEvals->count() > 0)
 <div class="row g-4 mb-4">
     <div class="col-12">
@@ -508,7 +521,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const ctx = document.getElementById('employeeTrendChart');
+        const ctx = document.getElementById('managerTrendChart');
         if (!ctx) return;
         const chartCtx = ctx.getContext('2d');
         const gradient = chartCtx.createLinearGradient(0, 0, 0, 200);
@@ -520,7 +533,7 @@
                 labels: ["{{ __('Jan') }}", "{{ __('Feb') }}", "{{ __('Mar') }}", "{{ __('Apr') }}", "{{ __('May') }}", "{{ __('Jun') }}"],
                 datasets: [{
                     label: "{{ __('Score') }}",
-                    data: [5.5, 6.2, 7.0, 7.8, 8.2, 8.4],
+                    data: [6.0, 6.5, 7.2, 7.5, 8.0, 8.5],
                     borderColor: '#10b981',
                     backgroundColor: gradient,
                     fill: true,

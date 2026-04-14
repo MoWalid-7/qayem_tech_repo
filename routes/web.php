@@ -38,4 +38,6 @@ Route::post('/evaluate/manager/{manager}', [EvaloWebController::class, 'evaluate
 
 // Employee portal routes
 Route::get('/my-profile', [EvaloWebController::class, 'employeeProfile'])->name('employee.profile');
-Route::post('/my-ai-chat', [EvaloWebController::class, 'employeeAiChat'])->name('employee.ai.chat');
+
+// Manager portal routes
+Route::get('/manager/my-profile', [EvaloWebController::class, 'managerProfile'])->name('manager.profile');
