@@ -254,6 +254,7 @@ class EvaloWebController extends Controller
             'departments',
             'managers',
             'employees',
+            'hrs',
             'recentActivities',
             'pendingTasks',
             'avgPerformance',
