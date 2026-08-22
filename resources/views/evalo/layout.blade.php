@@ -14,7 +14,12 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Custom CSS -->
-    <link href="{{ asset('evalo/css/styles.css') }}" rel="stylesheet">
+    <link href="{{ asset('evalo/css/styles.css') }}?v={{ time() }}" rel="stylesheet">
+    <link href="{{ asset('evalo/css/modern.css') }}?v={{ time() }}" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://js.stripe.com/v3/"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +28,7 @@
     @yield('styles')
 </head>
 
-<body class="@yield('body_class')">
+<body class="@yield('body_class') modern-body">
     @yield('content')
 
     <!-- Scripts -->
@@ -93,6 +98,35 @@
         </button>
     </div>
     @endif
+
+    <script>
+        // Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const themeBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            // Check local storage
+            const savedTheme = localStorage.getItem('evalo-theme');
+            if (savedTheme === 'light') {
+                htmlEl.classList.add('light-mode');
+                if(themeIcon) themeIcon.classList.replace('bi-moon-stars-fill', 'bi-brightness-high-fill');
+            }
+
+            if(themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    htmlEl.classList.toggle('light-mode');
+                    if (htmlEl.classList.contains('light-mode')) {
+                        localStorage.setItem('evalo-theme', 'light');
+                        if(themeIcon) themeIcon.classList.replace('bi-moon-stars-fill', 'bi-brightness-high-fill');
+                    } else {
+                        localStorage.setItem('evalo-theme', 'dark');
+                        if(themeIcon) themeIcon.classList.replace('bi-brightness-high-fill', 'bi-moon-stars-fill');
+                    }
+                });
+            }
+        });
+    </script>
 
     @yield('scripts')
 </body>

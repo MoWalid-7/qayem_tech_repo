@@ -143,19 +143,35 @@ User Message: {$prompt}";
         ];
 
         try {
-            $response = Http::timeout(60)->post($url, $payload);
+            // Keep timeout under PHP's max_execution_time (30s) so we return
+            // a proper JSON error instead of a fatal error HTML page.
+            $response = Http::timeout(25)->post($url, $payload);
             if ($response->successful()) {
                 $responseData = $response->json();
                 return $responseData['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from AI.';
             }
             Log::error('Gemini Chat Error', ['status' => $response->status(), 'response' => $response->body()]);
             if ($response->status() === 429) {
-                return 'AI Assistant is temporarily busy (Quota limit reached). Please try again in a minute.';
+                return app()->getLocale() === 'ar'
+                    ? 'مساعد الذكاء الاصطناعي مشغول حالياً (تم استنفاد الحصة). يرجى المحاولة بعد دقيقة.'
+                    : 'AI Assistant is temporarily busy. Please try again in a minute.';
             }
+            if ($response->status() >= 500) {
+                return app()->getLocale() === 'ar'
+                    ? 'خدمة الذكاء الاصطناعي غير متاحة مؤقتاً. يرجى المحاولة لاحقاً.'
+                    : 'AI service is temporarily unavailable. Please try again later.';
+            }
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::error('Gemini Chat Timeout', ['message' => $e->getMessage()]);
+            return app()->getLocale() === 'ar'
+                ? 'انتهت مهلة الاتصال بالذكاء الاصطناعي. يرجى المحاولة مرة أخرى.'
+                : 'AI request timed out. Please try again.';
         } catch (\Exception $e) {
             Log::error('Gemini Chat Exception', ['message' => $e->getMessage()]);
         }
 
-        return 'Failed to reach AI assistant. Please check your connection or try again later.';
+        return app()->getLocale() === 'ar'
+            ? 'تعذر الوصول إلى مساعد الذكاء الاصطناعي. يرجى التحقق من اتصالك والمحاولة مرة أخرى.'
+            : 'Failed to reach AI assistant. Please check your connection or try again later.';
     }
 }

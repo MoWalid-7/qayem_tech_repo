@@ -13,7 +13,7 @@
                 <h1 class="display-3 fw-bold">{!! __('Elevate Every :span', ['span' => '<span>' . __('Performance') . '</span>']) !!}</h1>
                 <p class="lead mb-4">{{ __('The all-in-one SaaS platform that uses Gemini AI to transform how you evaluate, mentor, and grow your workforce.') }}</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{{ route('subscribe') }}" class="btn-hero btn-hero-primary m-0">{{ __('Join Evalo') }}</a>
+                    <a href="{{ route('login') }}" class="btn-hero btn-hero-primary m-0">{{ __('Login') }}</a>
                     <a href="{{ route('about') }}" class="btn-hero btn-hero-outline m-0">{{ __('Our Mission') }}</a>
                 </div>
             </div>
@@ -217,7 +217,7 @@
     <div class="container py-5 animate-up">
         <h2 class="mb-4">{{ __('Ready to optimize your team?') }}</h2>
         <p class="lead text-secondary mb-5">{{ __('Join hundreds of companies using Evalo to build a better workplace.') }}</p>
-        <a href="{{ route('subscribe') }}" class="btn-hero btn-hero-primary px-5">{{ __('Get Started Today') }}</a>
+        <a href="{{ route('login') }}" class="btn-hero btn-hero-primary px-5">{{ __('Login Now') }}</a>
     </div>
 </section>
 

@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
+        $middleware->alias([
+            'auth.multi' => \App\Http\Middleware\AuthenticateMultiGuard::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

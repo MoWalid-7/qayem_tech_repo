@@ -26,12 +26,10 @@ class ContactMail extends Mailable
         $this->messageBody = $messageBody;
     }
 
-    /**
-     * Build the message.
-     */
     public function build()
     {
-        return $this->from($this->email, $this->name)
+        return $this->from(config('mail.from.address'), $this->name)
+            ->replyTo($this->email, $this->name)
             ->subject("Contact Form: " . $this->subject)
             ->view('emails.contact');
     }

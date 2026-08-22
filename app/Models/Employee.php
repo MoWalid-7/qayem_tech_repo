@@ -14,7 +14,11 @@ class Employee extends Authenticatable implements FilamentUser
     /** @use HasFactory<\Database\Factories\EmployeeFactory> */
     use HasFactory, HasApiTokens, Notifiable;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 'email', 'password', 'job_title', 'hire_date',
+        'salary', 'attendance_rate', 'tasks_completed', 'tasks_requested',
+        'company_id', 'department_id',
+    ];
 
     public function canAccessPanel(Panel $panel): bool
     {

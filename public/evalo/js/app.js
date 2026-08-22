@@ -203,6 +203,7 @@ function initFloatingChat() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': window.EvaloConfig.csrfToken
                     },
                     body: JSON.stringify({ message })
@@ -218,7 +219,10 @@ function initFloatingChat() {
                 aiBubble.innerHTML = typeof marked !== 'undefined' ? marked.parse(rawResponse) : rawResponse;
                 chatMessages.appendChild(aiBubble);
             } catch (error) {
-                chatMessages.removeChild(loadingBubble);
+                console.error('[Evalo AI Chat Error]', error);
+                if (loadingBubble.parentNode) {
+                    chatMessages.removeChild(loadingBubble);
+                }
                 const errorBubble = document.createElement('div');
                 errorBubble.className = 'chat-bubble ai animate-fade-in shadow-sm';
                 errorBubble.textContent = window.EvaloConfig._i18n.errorMsg;

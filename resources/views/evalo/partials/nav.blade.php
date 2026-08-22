@@ -15,6 +15,9 @@
             </div>
 
             <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                <button class="btn btn-sm btn-outline-light me-2" id="themeToggleBtn" title="{{ __('Toggle Theme') }}">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                </button>
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-translate me-1"></i> {{ app()->getLocale() == 'ar' ? 'العربية' : 'English' }}
@@ -25,7 +28,6 @@
                     </ul>
                 </div>
 
-                <a href="{{ route('subscribe') }}" class="btn-cta">{{ __('Get Started') }}</a>
             </div>
         </div>
     </div>

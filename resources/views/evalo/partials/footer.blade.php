@@ -21,7 +21,6 @@
             <div class="col-lg-2">
                 <h6>{{ __('Product') }}</h6>
                 <ul class="list-unstyled">
-                    <li><a href="{{ route('subscribe') }}">{{ __('Pricing') }}</a></li>
                     <li><a href="{{ route('home') }}">{{ __('Features') }}</a></li>
                     <li><a href="{{ route('about') }}">{{ __('Security') }}</a></li>
                 </ul>

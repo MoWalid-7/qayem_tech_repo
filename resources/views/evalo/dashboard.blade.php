@@ -313,6 +313,9 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link rounded-pill px-4 border-0" id="employees-tab" data-bs-toggle="tab" data-bs-target="#employees" type="button">{{ __('Employees') }}</button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill px-4 border-0" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button">{{ __('Daily Attendance') }}</button>
+                                </li>
                             </ul>
                         </div>
                         <div class="tab-content p-4" id="hrTabsContent">
@@ -492,6 +495,43 @@
                                                 </td>
                                             </tr>
                                             @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Attendance Tab -->
+                            <div class="tab-pane fade" id="attendance" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h6 class="text-secondary text-uppercase smaller mb-0">{{ __('Today\'s Attendance Log') }}</h6>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover border-glass align-middle">
+                                        <thead>
+                                            <tr class="text-secondary smaller text-uppercase">
+                                                <th class="border-0 px-4">{{ __('Name') }}</th>
+                                                <th class="border-0">{{ __('Role') }}</th>
+                                                <th class="border-0 text-center">{{ __('Check In') }}</th>
+                                                <th class="border-0 text-center">{{ __('Check Out') }}</th>
+                                                <th class="border-0 text-center">{{ __('Status') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($attendances ?? [] as $att)
+                                            <tr>
+                                                <td class="px-4 text-white fw-bold">{{ $att->user->name ?? __('Unknown') }}</td>
+                                                <td class="text-secondary">{{ str_replace('App\\Models\\', '', $att->user_type) }}</td>
+                                                <td class="text-center text-success">{{ $att->check_in ? $att->check_in->format('H:i:s') : '--:--' }}</td>
+                                                <td class="text-center text-danger">{{ $att->check_out ? $att->check_out->format('H:i:s') : '--:--' }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary-light">{{ ucfirst($att->status) }}</span>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center text-secondary py-4">{{ __('No attendance records for today.') }}</td>
+                                            </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>

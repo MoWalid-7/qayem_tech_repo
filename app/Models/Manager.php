@@ -10,7 +10,11 @@ class Manager extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\ManagerFactory> */
     use HasFactory, HasApiTokens;
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 'email', 'password', 'role',
+        'hire_date', 'attendance_rate', 'tasks_completed', 'tasks_requested',
+        'company_id',
+    ];
 
     protected $casts = [
         'hire_date' => 'date',
@@ -30,9 +34,20 @@ class Manager extends Authenticatable
     {
         return $this->belongsTo(Company::class);
     }
+    /**
+     * Employees in this manager's department.
+     * Note: employees are linked to departments, not directly to managers.
+     */
     public function employees()
     {
-        return $this->hasMany(Employee::class);
+        return $this->hasManyThrough(
+            Employee::class,
+            Department::class,
+            'manager_id', // FK on departments
+            'department_id', // FK on employees
+            'id',
+            'id'
+        );
     }
     public function department()
     {

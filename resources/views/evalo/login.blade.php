@@ -8,7 +8,7 @@
 <nav class="qt-navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="{{ route('home') }}">{{ __('Evalo') }}</a>
-        <a href="{{ route('subscribe') }}" class="nav-link">{{ __('Subscribe') }}</a>
+
     </div>
 </nav>
 
@@ -19,18 +19,21 @@
     <form id="loginForm">
         @csrf
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="email" placeholder="{{ __('name@example.com') }}" required>
+            <input type="email" class="form-control" id="email" placeholder=" " required>
             <label for="email">{{ __('Email Address') }}</label>
         </div>
-        <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="password" placeholder="{{ __('Password') }}" required>
+        <div class="form-floating mb-3 position-relative">
+            <input type="password" class="form-control" id="password" placeholder=" " required style="padding-right: 2.5rem;">
             <label for="password">{{ __('Password') }}</label>
+            <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-secondary text-decoration-none shadow-none" id="togglePassword" style="z-index: 10;">
+                <i class="bi bi-eye"></i>
+            </button>
         </div>
 
         <button type="submit" class="btn-auth">{{ __('Login to Dashboard') }}</button>
 
         <div class="text-center mt-4">
-            <p class="text-secondary small">{{ __('Don\'t have an account?') }} <a href="{{ route('subscribe') }}" class="text-primary-light text-decoration-none">{{ __('Subscribe') }}</a></p>
+
         </div>
     </form>
 </div>
@@ -38,6 +41,21 @@
 
 @section('scripts')
 <script>
+    // Password toggle logic
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+
+
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = this.querySelector('.btn-auth');

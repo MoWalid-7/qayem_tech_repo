@@ -291,6 +291,19 @@
                     </div>
                     @endforeach
                 </div>
+                
+                {{-- Attendance Actions --}}
+                <div class="mt-4 pt-3 border-top border-glass w-100">
+                    <h6 class="text-secondary smaller text-uppercase mb-3">{{ __('Daily Attendance') }}</h6>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button onclick="recordAttendance('check-in')" class="btn btn-sm btn-outline-success border-glass rounded-pill px-3 flex-grow-1">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> {{ __('Check In') }}
+                        </button>
+                        <button onclick="recordAttendance('check-out')" class="btn btn-sm btn-outline-danger border-glass rounded-pill px-3 flex-grow-1">
+                            <i class="bi bi-box-arrow-left me-1"></i> {{ __('Check Out') }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -505,6 +518,34 @@
 <script>
     function printReport() {
         window.print();
+    }
+
+    function recordAttendance(type) {
+        const url = type === 'check-in' 
+            ? '{{ route("attendance.checkIn") }}' 
+            : '{{ route("attendance.checkOut") }}';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                alert(data.message);
+                // Optionally reload to update status
+                // window.location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("{{ __('An error occurred.') }}");
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {

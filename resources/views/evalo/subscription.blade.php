@@ -232,6 +232,7 @@
                 method: 'POST',
                 body: formData,
                 headers: {
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
                 }
             });
@@ -241,6 +242,9 @@
             if (result.success) {
                 // Show success state
                 document.getElementById('sub-subtitle').innerHTML = `<span class="text-success fw-bold">Success!</span> ${result.message}`;
+
+                const emailVal = result.credentials?.email || formData.get('email') || '';
+                const passwordVal = result.credentials?.password || 'Sent to email';
 
                 const stepFormContainer = document.querySelector('.col-lg-8');
                 stepFormContainer.innerHTML = `
@@ -255,11 +259,11 @@
                             <h6 class="mb-3 text-success">Login Credentials:</h6>
                             <div class="mb-2">
                                 <small class="text-secondary d-block">Business Email</small>
-                                <strong class="text-white">${result.credentials.email}</strong>
+                                <strong class="text-white">${emailVal}</strong>
                             </div>
                             <div class="mt-3">
                                 <small class="text-secondary d-block">Temporary Password</small>
-                                <strong class="text-white font-monospace">${result.credentials.password}</strong>
+                                <strong class="text-white font-monospace">${passwordVal}</strong>
                             </div>
                         </div>
                         
@@ -268,15 +272,16 @@
                             Please save these credentials. You can change your password after your first login.
                         </div>
 
-                        <a href="${result.redirect}" class="btn-auth decoration-none d-inline-block" style="text-decoration: none;">Go to Dashboard & Login</a>
+                        <a href="${result.redirect || '#'}" class="btn-auth decoration-none d-inline-block" style="text-decoration: none;">Go to Dashboard & Login</a>
                     </div>
                 `;
             } else {
-                showToast(result.message, 'danger');
+                showToast(result.message || 'Payment failed.', 'danger');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Pay & Subscribe';
             }
         } catch (err) {
+            console.error('Subscription Submission Error:', err);
             showToast('Something went wrong during payment processing.', 'danger');
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Pay & Subscribe';

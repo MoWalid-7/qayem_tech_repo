@@ -3,40 +3,87 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CompanyResource\Pages;
-use App\Filament\Resources\CompanyResource\RelationManagers;
 use App\Models\Company;
+use App\Models\Manager;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CompanyResource extends Resource
 {
     protected static ?string $model = Company::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static ?string $navigationLabel = 'Companies';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->nullable()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
-                    ->nullable()
-                    ->maxLength(255),
+                Forms\Components\Section::make('Company Information')
+                    ->description('Basic company details')
+                    ->icon('heroicon-o-building-office')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Company Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('Acme Corporation'),
+
+                        Forms\Components\TextInput::make('email')
+                            ->label('Company Email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('info@company.com'),
+
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Phone Number')
+                            ->tel()
+                            ->nullable()
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('address')
+                            ->label('Address')
+                            ->nullable()
+                            ->maxLength(255),
+                    ]),
+
+                // GM section only shows on create
+                Forms\Components\Section::make('General Manager Account')
+                    ->description('These credentials will be used by the General Manager to login')
+                    ->icon('heroicon-o-user-circle')
+                    ->columns(2)
+                    ->hidden(fn ($record) => $record !== null) // hide on edit
+                    ->schema([
+                        Forms\Components\TextInput::make('gm_name')
+                            ->label('GM Full Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('John Doe'),
+
+                        Forms\Components\TextInput::make('gm_email')
+                            ->label('GM Email (Login)')
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique('managers', 'email')
+                            ->placeholder('gm@company.com'),
+
+                        Forms\Components\TextInput::make('gm_password')
+                            ->label('GM Password')
+                            ->password()
+                            ->required()
+                            ->minLength(6)
+                            ->maxLength(255)
+                            ->helperText('Minimum 6 characters. Share this with the GM securely.'),
+                    ]),
             ]);
     }
 
@@ -46,26 +93,43 @@ class CompanyResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold'),
+
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable(),
+
                 Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('managers_count')
+                    ->label('Managers')
+                    ->counts('managers')
+                    ->badge()
+                    ->color('primary'),
+
+                Tables\Columns\TextColumn::make('employees_count')
+                    ->label('Employees')
+                    ->counts('employees')
+                    ->badge()
+                    ->color('success'),
+
+                Tables\Columns\TextColumn::make('departments_count')
+                    ->label('Departments')
+                    ->counts('departments')
+                    ->badge()
+                    ->color('info'),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->since()
+                    ->toggleable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -75,23 +139,23 @@ class CompanyResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCompanies::route('/'),
+            'index'  => Pages\ListCompanies::route('/'),
             'create' => Pages\CreateCompany::route('/create'),
-            'view' => Pages\ViewCompany::route('/{record}'),
-            'edit' => Pages\EditCompany::route('/{record}/edit'),
+            'view'   => Pages\ViewCompany::route('/{record}'),
+            'edit'   => Pages\EditCompany::route('/{record}/edit'),
         ];
     }
 }
+

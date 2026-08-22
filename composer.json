@@ -17,6 +17,8 @@
     "require-dev": {
         "beyondcode/expose": "^3.2",
         "fakerphp/faker": "^1.23",
+        "laramint/laravel-brain": "^2.4",
+        "laravel/doctor": "^0.1.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
